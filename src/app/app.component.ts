@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   };
 
   @ViewChild('canvasEl', {static : false}) canvasEl : ElementRef;
-  private ctx : C;
+  private ctx : CanvasRenderingContext2D;
 
   draw() {
     // Verificar a área de atuação.
