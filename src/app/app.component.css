@@ -1,0 +1,24 @@
+.actionBtn {
+    margin-top: 5px;
+    margin-bottom: 2px;
+    font-size: 1.2em;
+  }
+  
+  .snapshot {
+    text-align: center;
+  }
+
+  .snapshot img {
+    max-width: 800px;
+    max-height: 800px;
+  }
+  
+  ul.links {
+    padding-bottom: 20px;
+  }
+ 
+  canvas {
+    border: 2px solid rgba(0,0,0,0.54);
+    transition: 300ms;
+    border-radius: 4px;
+  }
