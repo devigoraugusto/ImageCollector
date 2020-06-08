@@ -9,9 +9,7 @@
 
 <!-- Toolbar -->
 <div style="text-align:center">
-  <h1>
-    Image Colector
-  </h1>
+  <h1>{{title}}</h1>
 
   <div>
     <webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
@@ -22,7 +20,7 @@
             (initError)="handleInitError($event)" [mirrorImage]=true
     ></webcam>
     <br/>
-    <button class="actionBtn" (click)="triggerSnapshot();">Take A Snapshot</button>
+    <button class="actionBtn" (click)="captureSnapshot();">Take A Snapshot</button>
     <button class="actionBtn" (click)="toggleWebcam();">Toggle Webcam</button>
     <button class="actionBtn" (click)="deleteSnapshot();">Delete Snapshot</button>
     <br/>
@@ -39,7 +37,23 @@
 
 <div class="snapshot" *ngIf="webcamImage">
   <h2>Select region of interest:</h2>
-    <img [src]="webcamImage.imageAsDataUrl" (mouseup)="obtemPontoFinal($event);" (mousedown)="obtemPontoInicial($event);"/>
+    <img [src]="webcamImage.imageAsDataUrl" />
+        
+</div>
+
+<div fxFlex="100%" fxFlexAlign="center">
+  <canvas #canvas id="canvas" width="640" height="480" (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
+  <div>
+    <button class="actionBtn" (click)="cutImage()">Cut Image</button>
+  </div>
+  <div>
+    <button class="actionBtn" (click)="ProcessImage()">Get Image</button>
+  </div>
+</div>
+
+<div>
+  <!-- <canvas #canvas2 id="canvas2" width=640 height=480></canvas> -->
+  
 </div>
 
 <h4 *ngIf="errors.length > 0">Messages:</h4>
@@ -47,7 +61,6 @@
   <li>{{error | json}}</li>
 </ul>
 
-<!-- <canvas id="roi" width="webcamImage.width" height="webcamImage.height" style="border:1px solid #000000;" ></canvas> -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * The content above * * * * * * * * * * * -->
 <!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->

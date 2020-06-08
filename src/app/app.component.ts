@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
-import {Subject, Observable} from 'rxjs';
+import {Subject, Observable, ObjectUnsubscribedError} from 'rxjs';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
+import {ImageJSON} from './ImageJson';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,10 @@ import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  
+  @ViewChild("video")
+  public video : ElementRef;
+  title = 'ROI Collector';
   // toggle webcam on/off
   public showWebcam = true;
   public allowCameraSwitch = true;
@@ -18,14 +23,16 @@ export class AppComponent implements OnInit {
     // height: {ideal: 576}
   };
 
-  @ViewChild('canvasEl', {static : false}) canvasEl : ElementRef;
-  private ctx : CanvasRenderingContext2D;
+  public imageObj = null;
+  public drag = false;
+  public rect = {startX:null, startY: null, w:null, h:null};
+  
+  @ViewChild("canvas", {static: true}) canvas : ElementRef<HTMLCanvasElement>;
+  @ViewChild("canvas2", {static: true}) canvas2 : ElementRef<HTMLCanvasElement>;
 
-  draw() {
-    // Verificar a área de atuação.
-    
-  }
-
+  private ctx: CanvasRenderingContext2D;
+  private ctx2: CanvasRenderingContext2D;
+  
   public errors: WebcamInitError[] = [];
 
   // latest snapshot
@@ -42,14 +49,24 @@ export class AppComponent implements OnInit {
         this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
     });
 
-    if (this.canvasEl != null)
-      this.ctx = (this.canvasEl.nativeElement as HTMLCanvasElement).getContext('2d');
-      
+    // if (this.canvas != null)
+    this.ctx = this.canvas.nativeElement.getContext('2d');
+    this.ctx2 = this.canvas2.nativeElement.getContext('2d');
+    
   }
 
-  public triggerSnapshot(): void {
+  public ngAfterViewInit() {
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+            this.video.nativeElement.src = window.URL.createObjectURL(stream);
+            this.video.nativeElement.play();
+        });
+    }
+  }
+
+  public captureSnapshot(): void {
     this.trigger.next();
-    this.draw();
+    this.ctx.clearRect(0, 0, 500, 500);
   }
 
   public toggleWebcam(): void {
@@ -74,6 +91,7 @@ export class AppComponent implements OnInit {
   public handleImage(webcamImage: WebcamImage): void {
     console.info('received webcam image', webcamImage);
     this.webcamImage = webcamImage;
+    this.draw();
   }
 
   public cameraWasSwitched(deviceId: string): void {
@@ -89,7 +107,22 @@ export class AppComponent implements OnInit {
     return this.nextWebcam.asObservable();          
   }
 
-  public obtemPontoInicial($event : MouseEvent): void {
+  public draw() {
+    //var ctx = this.canvas.nativeElement.getContext('2d');
+    //var rect = {startX:null, startY: null, w:null, h:null};
+    
+    this.imageObj = new Image();
+    this.imageObj.src = this.webcamImage.imageAsDataUrl;
+    //this.imageObj.onload = function() { this.ctx.drawImage(this.imageObj, 0, 0); };
+    this.ctx.drawImage(this.imageObj, 0, 0);
+    //this.canvas.addEventListener('mousedown', mouseDown, false);
+    //this.canvas.addEventListener('mouseup', mouseUp, false);
+    //this.canvas.addEventListener('mousemove', mouseMove, false);
+
+  }
+
+
+  public obtemPonto($event : MouseEvent): void {
     var x, y : Number;
     x = $event.offsetX;
     y = $event.offsetY;
@@ -97,11 +130,45 @@ export class AppComponent implements OnInit {
 
   }
 
-  public obtemPontoFinal($event : MouseEvent): void {
-    var xF, yF : Number;
-    xF = $event.offsetX;
-    yF = $event.offsetY;
-    console.log("posicao xF: " + xF + ", posicao yF: " + yF);
+  public mouseDown(e : MouseEvent) {
+    this.rect.startX = e.offsetX;
+    this.rect.startY = e.offsetY;
+    this.drag = true;
+    this.obtemPonto(e)
+  }
+
+  public mouseMove(e : MouseEvent) {
+    if(this.drag) {
+      this.ctx.clearRect(0, 0, 500, 500);
+      this.ctx.drawImage(this.imageObj, 0, 0);
+      this.rect.w = (e.offsetX) - this.rect.startX;
+      this.rect.h = (e.offsetY) - this.rect.startY;
+      this.ctx.strokeStyle = 'red';
+      this.ctx.strokeRect(this.rect.startX, this.rect.startY, this.rect.w, this.rect.h);
+    }
+  }
+
+  public mouseUp(e : MouseEvent) {
+    this.drag = false;
+    this.obtemPonto(e);
+  }
+
+  public cutImage() {
+    
+    this.ctx2.clearRect(0, 0, 640, 480);
+    this.ctx2.drawImage(this.imageObj, this.rect.startX, this.rect.startY, this.rect.w, this.rect.h, 0, 0, this.rect.w, this.rect.h);
+  }
+
+  public ProcessImage() {
+    var msg: ImageJSON = {
+      image: this.webcamImage.imageAsDataUrl,
+      cropPositionX: this.rect.startX,
+      cropPositionY: this.rect.startY,
+      cropWidth: this.rect.w,
+      cropHeigth: this.rect.h
+    };
+
+    console.log(JSON.stringify(msg));
   }
 
 }
