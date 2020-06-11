@@ -35,19 +35,22 @@
   </div>
 </div>
 
-<div class="snapshot" *ngIf="webcamImage">
-  <h2>Select region of interest:</h2>
-    <img [src]="webcamImage.imageAsDataUrl" />
+<!-- <div class="snapshot" *ngIf="webcamImage"> -->
+  
+  <!--  <img [src]="webcamImage.imageAsDataUrl" />
         
-</div>
+</div> -->
 
-<div fxFlex="100%" fxFlexAlign="center">
+<div>
+  <h2>Select region of interest:</h2>
   <canvas #canvas id="canvas" width="640" height="480" (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
   <div>
-    <button class="actionBtn" (click)="cutImage()">Cut Image</button>
+    <!-- <button class="actionBtn" (click)="cutImage()">Cut Image</button> -->
+    <p>{{test}}</p>
   </div>
   <div>
     <button class="actionBtn" (click)="ProcessImage()">Get Image</button>
+    <button class="actionBtn" (click)="DownloadImage()">Download</button>
   </div>
 </div>
 

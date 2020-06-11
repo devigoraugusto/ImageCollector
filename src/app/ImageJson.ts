@@ -1,7 +1,9 @@
 export interface ImageJSON {
     image: string;
-    cropPositionX: number;
-    cropPositionY: number;
-    cropWidth: number;
-    cropHeigth: number;
+    image_roi: {
+        x: number,
+        y: number,
+        width: number,
+        height: number;
+    }
 }

@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
     // height: {ideal: 576}
   };
 
+  public test = "";
   public imageObj = null;
   public drag = false;
   public rect = {startX:null, startY: null, w:null, h:null};
@@ -55,18 +56,18 @@ export class AppComponent implements OnInit {
     
   }
 
-  public ngAfterViewInit() {
-    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-            this.video.nativeElement.src = window.URL.createObjectURL(stream);
-            this.video.nativeElement.play();
-        });
-    }
-  }
+  // public ngAfterViewInit() {
+  //   if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  //       navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+  //           this.video.nativeElement.src = window.URL.createObjectURL(stream);
+  //           this.video.nativeElement.play();
+  //       });
+  //   }
+  // }
 
   public captureSnapshot(): void {
     this.trigger.next();
-    this.ctx.clearRect(0, 0, 500, 500);
+    this.ctx.clearRect(0, 0, 640, 480);
   }
 
   public toggleWebcam(): void {
@@ -108,17 +109,9 @@ export class AppComponent implements OnInit {
   }
 
   public draw() {
-    //var ctx = this.canvas.nativeElement.getContext('2d');
-    //var rect = {startX:null, startY: null, w:null, h:null};
-    
     this.imageObj = new Image();
     this.imageObj.src = this.webcamImage.imageAsDataUrl;
-    //this.imageObj.onload = function() { this.ctx.drawImage(this.imageObj, 0, 0); };
     this.ctx.drawImage(this.imageObj, 0, 0);
-    //this.canvas.addEventListener('mousedown', mouseDown, false);
-    //this.canvas.addEventListener('mouseup', mouseUp, false);
-    //this.canvas.addEventListener('mousemove', mouseMove, false);
-
   }
 
 
@@ -139,7 +132,7 @@ export class AppComponent implements OnInit {
 
   public mouseMove(e : MouseEvent) {
     if(this.drag) {
-      this.ctx.clearRect(0, 0, 500, 500);
+      this.ctx.clearRect(0, 0, 640, 480);
       this.ctx.drawImage(this.imageObj, 0, 0);
       this.rect.w = (e.offsetX) - this.rect.startX;
       this.rect.h = (e.offsetY) - this.rect.startY;
@@ -162,13 +155,39 @@ export class AppComponent implements OnInit {
   public ProcessImage() {
     var msg: ImageJSON = {
       image: this.webcamImage.imageAsDataUrl,
-      cropPositionX: this.rect.startX,
-      cropPositionY: this.rect.startY,
-      cropWidth: this.rect.w,
-      cropHeigth: this.rect.h
+      image_roi : {
+        x: this.rect.startX,
+        y: this.rect.startY,
+        width: this.rect.w,
+        height: this.rect.h
+      }
     };
 
     console.log(JSON.stringify(msg));
+    this.test = JSON.stringify(msg);
   }
 
+  public DownloadImage() {
+    let byteCharacters = atob(this.webcamImage.imageAsBase64);
+    let byteNumbers = new Array(byteCharacters.length);
+    for (var i=0; i<byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    
+    var byteArray = new Uint8Array(byteNumbers);
+    let blob = new Blob([byteArray], {"type": "imagem/png"});
+
+    if (navigator.msSaveBlob) {
+      let filename = "picture.png";
+      navigator.msSaveBlob(blob, filename);
+    } else {
+      let link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('visibility', 'hidden');
+      link.download = 'picture.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
 }
