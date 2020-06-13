@@ -20,11 +20,11 @@
             (initError)="handleInitError($event)" [mirrorImage]=true
     ></webcam>
     <br/>
-    <button class="actionBtn" (click)="captureSnapshot();">Take A Snapshot</button>
-    <button class="actionBtn" (click)="toggleWebcam();">Toggle Webcam</button>
-    <button class="actionBtn" (click)="deleteSnapshot();">Delete Snapshot</button>
+    <button mat-raised-button color="primary" (click)="captureSnapshot();">Take A Snapshot</button>
+    <button mat-raised-button color="primary" (click)="toggleWebcam();">Toggle Webcam</button>
+    <button mat-raised-button color="primary" (click)="deleteSnapshot();">Delete Snapshot</button>
     <br/>
-    <button class="actionBtn" (click)="showNextWebcam(true);" [disabled]="!multipleWebcamsAvailable">Next Webcam</button>
+    <button (click)="showNextWebcam(true);" [disabled]="!multipleWebcamsAvailable">Next Webcam</button>
     <input id="cameraSwitchCheckbox" type="checkbox" [(ngModel)]="allowCameraSwitch"><label for="cameraSwitchCheckbox">Allow Camera Switch</label>
     <br/>
     
@@ -41,16 +41,15 @@
         
 </div> -->
 
-<div>
+<div [hidden]="!haveImage" class="snapshot">
   <h2>Select region of interest:</h2>
   <canvas #canvas id="canvas" width="1024" height="576" (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
   <div>
     <!-- <button class="actionBtn" (click)="cutImage()">Cut Image</button> -->
-    <p>{{test}}</p>
   </div>
   <div>
-    <button class="actionBtn" (click)="ProcessImage()">Get Image</button>
-    <button class="actionBtn" (click)="DownloadImage()">Download</button>
+    <button (click)="ProcessImage()">Get Image</button>
+    <button (click)="DownloadImage()">Download</button>
   </div>
 </div>
 

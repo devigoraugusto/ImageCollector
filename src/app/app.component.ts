@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
     height: {ideal: 576}
   };
 
-  public test = "";
+  public haveImage = false;
   public imageObj = null;
   public drag = false;
   public rect = {startX:null, startY: null, w:null, h:null};
@@ -59,20 +59,12 @@ export class AppComponent implements OnInit {
     
   }
 
-  // public ngAfterViewInit() {
-  //   if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  //       navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-  //           this.video.nativeElement.src = window.URL.createObjectURL(stream);
-  //           this.video.nativeElement.play();
-  //       });
-  //   }
-  // }
-
   public captureSnapshot(): void {
     this.trigger.next();
     this.ctx.clearRect(0, 0, 1024, 576);
-    //this.imageObj.src = this.webcamImage.imageAsDataUrl;
+    this.imageObj.src = this.webcamImage.imageAsDataUrl;
     this.ctx.drawImage(this.imageObj, 0, 0);
+    this.haveImage = true;
   }
 
   public toggleWebcam(): void {
@@ -81,6 +73,7 @@ export class AppComponent implements OnInit {
 
   public deleteSnapshot(): void {
     this.webcamImage = null;
+    this.haveImage = false;
   }
 
   public handleInitError(error: WebcamInitError): void {
@@ -170,7 +163,6 @@ export class AppComponent implements OnInit {
 
     var answer = this.imgService.postImage(msg).subscribe();
     console.log(JSON.stringify(msg));
-    this.test = JSON.stringify(msg);
   }
 
   public DownloadImage() {
