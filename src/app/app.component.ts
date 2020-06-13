@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {Subject, Observable, ObjectUnsubscribedError} from 'rxjs';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
 import {ImageJSON} from './ImageJson';
+import { ImageService } from './services/image.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,8 @@ import {ImageJSON} from './ImageJson';
 })
 export class AppComponent implements OnInit {
   
+  constructor(private imgService: ImageService){}
+
   @ViewChild("video")
   public video : ElementRef;
   title = 'ROI Collector';
@@ -19,8 +22,8 @@ export class AppComponent implements OnInit {
   public multipleWebcamsAvailable = false;
   public deviceId: string;
   public videoOptions: MediaTrackConstraints = {
-    // width: {ideal: 1024},
-    // height: {ideal: 576}
+    width: {ideal: 1024},
+    height: {ideal: 576}
   };
 
   public test = "";
@@ -67,7 +70,9 @@ export class AppComponent implements OnInit {
 
   public captureSnapshot(): void {
     this.trigger.next();
-    this.ctx.clearRect(0, 0, 640, 480);
+    this.ctx.clearRect(0, 0, 1024, 576);
+    //this.imageObj.src = this.webcamImage.imageAsDataUrl;
+    this.ctx.drawImage(this.imageObj, 0, 0);
   }
 
   public toggleWebcam(): void {
@@ -132,7 +137,7 @@ export class AppComponent implements OnInit {
 
   public mouseMove(e : MouseEvent) {
     if(this.drag) {
-      this.ctx.clearRect(0, 0, 640, 480);
+      this.ctx.clearRect(0, 0, 1024, 576);
       this.ctx.drawImage(this.imageObj, 0, 0);
       this.rect.w = (e.offsetX) - this.rect.startX;
       this.rect.h = (e.offsetY) - this.rect.startY;
@@ -148,13 +153,13 @@ export class AppComponent implements OnInit {
 
   public cutImage() {
     
-    this.ctx2.clearRect(0, 0, 640, 480);
+    this.ctx2.clearRect(0, 0, 1024, 576);
     this.ctx2.drawImage(this.imageObj, this.rect.startX, this.rect.startY, this.rect.w, this.rect.h, 0, 0, this.rect.w, this.rect.h);
   }
 
   public ProcessImage() {
     var msg: ImageJSON = {
-      image: this.webcamImage.imageAsDataUrl,
+      image: this.webcamImage.imageAsBase64,
       image_roi : {
         x: this.rect.startX,
         y: this.rect.startY,
@@ -163,6 +168,7 @@ export class AppComponent implements OnInit {
       }
     };
 
+    var answer = this.imgService.postImage(msg).subscribe();
     console.log(JSON.stringify(msg));
     this.test = JSON.stringify(msg);
   }
