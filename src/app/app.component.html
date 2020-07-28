@@ -8,49 +8,50 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
 <!-- Toolbar -->
+
 <div style="text-align:center">
   <h1>{{title}}</h1>
-
-  <div>
-    <webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
-            [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
-            [videoOptions]="videoOptions"
-            [imageQuality]="1"
-            (cameraSwitched)="cameraWasSwitched($event)"
-            (initError)="handleInitError($event)" [mirrorImage]=true
-    ></webcam>
-    <br/>
-    <button mat-raised-button color="primary" (click)="captureSnapshot();">Take A Snapshot</button>
-    <button mat-raised-button color="primary" (click)="toggleWebcam();">Toggle Webcam</button>
-    <button mat-raised-button color="primary" (click)="deleteSnapshot();">Delete Snapshot</button>
-    <br/>
-    <button (click)="showNextWebcam(true);" [disabled]="!multipleWebcamsAvailable">Next Webcam</button>
-    <input id="cameraSwitchCheckbox" type="checkbox" [(ngModel)]="allowCameraSwitch"><label for="cameraSwitchCheckbox">Allow Camera Switch</label>
-    <br/>
-    
-  </div>
-  <div id="idCamera" disabled="disabled">
-    DeviceId: <input id="deviceId" type="text" [(ngModel)]="deviceId" style="width: 500px">
-    <button (click)="showNextWebcam(deviceId);">Activate</button>
-  </div>
-</div>
-
-<!-- <div class="snapshot" *ngIf="webcamImage"> -->
+  <table align="center">
   
-  <!--  <img [src]="webcamImage.imageAsDataUrl" />
-        
-</div> -->
+    <tr align="center">
+      <td>
+          <mat-card>
+            <mat-card-title>Visão da Câmera</mat-card-title>
+            <webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
+                    [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
+                    [videoOptions]="videoOptions" [imageQuality]="1" (cameraSwitched)="cameraWasSwitched($event)"
+                    (initError)="handleInitError($event)" [mirrorImage]=true>
+            </webcam>
 
+            <mat-card-actions class="linha-buttons">
+              <button mat-raised-button (click)="captureSnapshot();">Capturar Frame</button>
+              <button mat-raised-button (click)="toggleWebcam();">Ocultar/Exibir</button>
+              <button mat-raised-button (click)="deleteSnapshot();">Apagar Captura</button>
+            </mat-card-actions>
+          </mat-card>
+          <br/>
+      </td>
+    </tr>
+  </table>  
+  <br/>
+</div>
+<mat-divider></mat-divider>
 <div [hidden]="!haveImage" class="snapshot">
-  <h2>Select region of interest:</h2>
-  <canvas #canvas id="canvas" width="1024" height="576" (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
-  <div>
-    <!-- <button class="actionBtn" (click)="cutImage()">Cut Image</button> -->
-  </div>
-  <div>
-    <button (click)="ProcessImage()">Get Image</button>
-    <button (click)="DownloadImage()">Download</button>
-  </div>
+  <table align="center">
+    <tr>
+      <td>
+        <mat-card>
+          <mat-card-title>Select region of interest:</mat-card-title>
+          <canvas #canvas id="canvas" width="1024" height="576" (mousedown)="mouseDown($event)" 
+                  (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
+          <mat-card-actions class="linha-buttons">
+            <button mat-raised-button (click)="ProcessImage()">Definir ROI</button>
+            <button mat-raised-button (click)="DownloadImage()">Baixar Imagem</button>
+          </mat-card-actions>
+        </mat-card>
+      </td>
+    </tr>
+  </table>  
 </div>
 
 <div>
@@ -58,11 +59,12 @@
   
 </div>
 
-<h4 *ngIf="errors.length > 0">Messages:</h4>
+<!-- <h4 *ngIf="errors.length > 0">Messages:</h4>
 <ul *ngFor="let error of errors">
   <li>{{error | json}}</li>
-</ul>
+</ul> -->
 
+<app-messages></app-messages>
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * The content above * * * * * * * * * * * -->
 <!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->

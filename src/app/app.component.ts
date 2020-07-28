@@ -1,8 +1,9 @@
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
-import {Subject, Observable, ObjectUnsubscribedError} from 'rxjs';
+import {Subject, Observable} from 'rxjs';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
 import {ImageJSON} from './ImageJson';
 import { ImageService } from './services/image.service';
+import { MessageService } from './services/message.service';
 
 @Component({
   selector: 'app-root',
@@ -161,7 +162,6 @@ export class AppComponent implements OnInit {
       }
     };
 
-    var answer = this.imgService.postImage(msg).subscribe();
     console.log(JSON.stringify(msg));
   }
 

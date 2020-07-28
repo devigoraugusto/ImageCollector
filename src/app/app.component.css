@@ -1,34 +1,46 @@
-/* .actionBtn {
-    margin-top: 5px;
-    margin-bottom: 2px;
-    font-size: 1.2em;
-  }
-   */
-  .snapshot {
-    text-align: center;
-  }
+h1 {
+  font-size: xx-large;
+}
+.snapshot {
+  text-align: center;
+}
 
-  .snapshot canvas {
-    max-width: 1024px;
-    max-height: 576px;
-  }
-  
-  ul.links {
-    padding-bottom: 20px;
-  }
- 
-  #canvas {
-    text-align: center;
-    border: 2px solid rgba(0,0,0,0.54);
-    transition: 300ms;
-    border-radius: 4px;
-    cursor: crosshair;
-  }
+.snapshot canvas {
+  max-width: 1024px;
+  max-height: 576px;
+}
 
-  #canvas2 {
-    text-align: center;
-    position: relative;
-    border: 2px solid rgba(0,0,0,0.54);
-    transition: 300ms;
-    border-radius: 4px;
-  }
+ul.links {
+  padding-bottom: 20px;
+}
+
+#canvas {
+  text-align: center;
+  border: 2px solid rgba(0,0,0,0.54);
+  transition: 300ms;
+  border-radius: 4px;
+  cursor: crosshair;
+}
+
+button {
+  text-transform: capitalize;
+  font-size: x-large;
+}
+
+.linha-buttons {
+  display: table-cell;
+}
+
+.linha-buttons button {
+  display: table-cell;
+  margin-right: 8px;
+  align-items: center;
+}
+
+.mat-card {
+  background-color: lightgrey;
+}
+
+.mat-card-title {
+  font-size: x-large;
+}

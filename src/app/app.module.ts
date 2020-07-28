@@ -7,10 +7,16 @@ import {FormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { WebcamModule } from 'ngx-webcam';
+import { MessagesComponent } from './messages/messages.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import {MatDividerModule} from '@angular/material/divider';
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,
@@ -18,7 +24,10 @@ import { WebcamModule } from 'ngx-webcam';
     FormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    WebcamModule
+    WebcamModule,
+    MatButtonModule,
+    MatCardModule,
+    MatDividerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
